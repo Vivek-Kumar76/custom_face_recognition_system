@@ -1,0 +1,12 @@
+insightface
+onnxruntime 
+opencv-python 
+numpy 
+scipy 
+scikit-image 
+pillow
+
+
+fastapi
+uvicorn
+python-multipart

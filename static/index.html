@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Recognition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a,#2563eb);
+            padding: 20px;
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px 35px;
+            border-radius: 20px;
+            width: 420px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            color: white;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin: 15px 0 8px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #e2e8f0;
+            }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px dashed rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            cursor: pointer;
+            transition: 0.3s ease;
+            }
+
+        input[type="file"]:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #93c5fd;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(37, 99, 255, 0.45);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37,99,235,0.6);
+            }
+
+        button:active {
+            transform: scale(0.98);
+            }
+
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            min-height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Face Comparison</h2>
+
+    <br>
+    <label>Image 1:</label><br>
+    <input type="file" id="file1"><br>
+
+    <label>Image 2:</label><br>
+    <input type="file" id="file2"><br>
+
+    <button onclick="compare()">Compare</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    async function compare() {
+
+        var file1 = document.getElementById("file1").files[0];
+        var file2 = document.getElementById("file2").files[0];
+
+        if (!file1 || !file2) {
+            alert("Please select both images.");
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("image1", file1);
+        formData.append("image2", file2);
+
+        document.getElementById("result").innerText = "Comparing...";
+
+        var response = await fetch("/compare", { method: "POST", body: formData });
+        var data     = await response.json();
+
+        if (data.match) {
+            document.getElementById("result").innerText = " Match  |  Similarity: " + (data.similarity_score * 100).toFixed(1) + "%";
+        } else {
+            document.getElementById("result").innerText = "No Match  |  Similarity: " + (data.similarity_score * 100).toFixed(1) + "%";
+        }
+    }
+</script>
+
+</body>
+</html>
